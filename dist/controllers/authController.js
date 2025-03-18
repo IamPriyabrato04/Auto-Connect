@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import { z } from "zod";
 config();
 import { PrismaClient } from '@prisma/client';
+const JWT_SECRET = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 const signupSchema = z.object({
     name: z.string().min(3).max(50),
@@ -21,8 +23,8 @@ const signupSchema = z.object({
 // sign up API
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const validatedPassword = signupSchema.parse(req.body);
-        const { name, email, password } = validatedPassword;
+        const validatedData = signupSchema.parse(req.body);
+        const { name, email, password } = validatedData;
         const existingUser = yield prisma.user.findUnique({
             where: {
                 email: email,
@@ -50,4 +52,35 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json({ message: "Invalid input", error });
     }
 });
-export { signup };
+// Login API
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password } = req.body;
+        const User = yield prisma.user.findUnique({
+            where: {
+                email: email,
+            }
+        });
+        if (!User) {
+            return res.status(401).json({
+                message: "Email not registered",
+            });
+        }
+        if (!(yield bcrypt.compare(password, User.password))) {
+            return res.status(401).json({
+                message: "Invalid credentials",
+            });
+        }
+        const token = jwt.sign({ userId: User.id }, JWT_SECRET, { expiresIn: "24h" });
+        res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
+        return res.json({ message: "Login successful", token });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error logging in", error });
+    }
+});
+const logout = (req, res) => {
+    res.clearCookie("token");
+    res.json({ message: "Logged out successfully" });
+};
+export { signup, login, logout };
