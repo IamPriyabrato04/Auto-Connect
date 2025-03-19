@@ -79,6 +79,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ message: "Error logging in", error });
     }
 });
+// Logout API
 const logout = (req, res) => {
     res.clearCookie("token");
     res.json({ message: "Logged out successfully" });
