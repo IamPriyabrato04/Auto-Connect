@@ -4,7 +4,8 @@ export const authState = atom({
     key: "authState",
     default: {
         token: localStorage.getItem("token") || null,
-        isAuthenticated: !!localStorage.getItem("token"),
+        // isAuthenticated: !!localStorage.getItem("token"),
+        isAuthenticated:true
     },
 });
 
