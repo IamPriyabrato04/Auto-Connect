@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {  Command, File, FileType2Icon, FileTypeIcon, FileUpIcon, Inbox, Send, SendHorizonal, SendHorizontalIcon, Trash2, UsersIcon } from "lucide-react"
+import {  Command, FileUpIcon, Inbox, SendHorizonal, SendHorizontalIcon, Trash2, UsersIcon } from "lucide-react"
 
 import { NavUser } from "@/components/nav-user"
 import { Label } from "@/components/ui/label"
@@ -12,15 +12,12 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInput,
-//   SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Switch } from "@/components/ui/switch"
-import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
 
 // This is sample data

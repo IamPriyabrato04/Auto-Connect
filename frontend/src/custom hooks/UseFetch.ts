@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000/api"; // Update with your backend URL
+const API_BASE_URL = "http://localhost:3000"; // Update with your backend URL
 
 export const useFetch = <T,>() => {
     const [data, setData] = useState<T | null>(null);

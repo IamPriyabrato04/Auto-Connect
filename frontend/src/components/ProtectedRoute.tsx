@@ -1,10 +1,19 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { authState } from "../atom/authAtom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
+import { useEffect } from "react";
 
 const ProtectedRoute = () => {
-  const auth = useRecoilValue(authState) as { isAuthenticated: boolean };
-  return auth.isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace />;
+  const navigate = useNavigate();
+  const {token, isAuthenticated, logout} = useAuthStore();
+  // Check if the user is authenticated
+  useEffect(() => {
+    if (!token || !isAuthenticated) {
+      logout();
+      navigate("/auth", { replace: true });
+    }
+   }, [token, isAuthenticated]);
+
+  return isAuthenticated ? <Outlet /> : null;
 };
 
 export default ProtectedRoute;
