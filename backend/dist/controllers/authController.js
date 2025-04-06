@@ -73,7 +73,15 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const token = jwt.sign({ userId: User.id }, JWT_SECRET, { expiresIn: "24h" });
         res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "strict" });
-        return res.json({ message: "Login successful", token });
+        return res.send({
+            message: "Login successful",
+            token,
+            user: {
+                id: User.id,
+                name: User.name,
+                email: User.email
+            }
+        });
     }
     catch (error) {
         res.status(500).json({ message: "Error logging in", error });
