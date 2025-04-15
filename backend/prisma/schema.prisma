@@ -8,51 +8,51 @@ datasource db {
 }
 
 model Room {
-  id                  String               @id @default(uuid())
-  host                User                 @relation("HostedRooms", fields: [hostId], references: [id])
-  hostId              String
-  allowWifiAutoJoin   Boolean              @default(false) // ⬅️ Host-controlled toggle
-  participants        Participant[]
-  messages            Message[]
-  networkFingerprints NetworkFingerPrint[]
-  createdAt           DateTime             @default(now())
+  id              String   @id @default(uuid())
+  name            String
+  hostId          String
+  host            User     @relation("HostedRooms", fields: [hostId], references: [id])
+  roomCode        String   @unique
+  autoJoinEnabled Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  participants        Participant[] // Users joined
+  networkFingerprints NetworkFingerprint[] // Auto-join based on Wi-Fi
+  messages            Message[] // In-room chat/messages
 }
 
 model Participant {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  room      Room     @relation(fields: [roomId], references: [id])
-  roomId    String
-  joinedAt  DateTime @default(now())
+  id       String   @id @default(uuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  roomId   String
+  room     Room     @relation(fields: [roomId], references: [id])
+  joinedAt DateTime @default(now())
 
-  // Optional additions for real-time status
-  isMuted   Boolean  @default(false)
-  isVideoOn Boolean  @default(true)
+  isMuted   Boolean @default(false)
+  isVideoOn Boolean @default(true)
 
   @@unique([userId, roomId]) // Prevent duplicate joins
 }
 
-
 model Message {
   id        String   @id @default(uuid())
   content   String
-  sender    User     @relation(fields: [senderId], references: [id])
   senderId  String
-  room      Room     @relation(fields: [roomId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
   roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
   timestamp DateTime @default(now())
 }
 
+model NetworkFingerprint {
+  id              String   @id @default(uuid())
+  fingerprintHash String
+  roomId          String
+  room            Room     @relation(fields: [roomId], references: [id])
+  createdAt       DateTime @default(now())
 
-model NetworkFingerPrint {
-  id        String   @id @default(uuid())
-  signature String
-  room      Room     @relation(fields: [roomId], references: [id])
-  roomId    String
-  createdAt DateTime @default(now())
-
-  @@unique([signature, roomId]) //
+  @@unique([fingerprintHash, roomId])
 }
 
 model User {
