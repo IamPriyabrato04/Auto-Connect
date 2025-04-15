@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/controllers/authcontroller.ts","./src/controllers/roomcontroller.ts","./src/middleware/authmiddleware.ts","./src/routes/authroute.ts","./src/routes/roomroutes.ts"],"errors":true,"version":"5.8.2"}
+{"root":["./src/index.ts","./src/controllers/authcontroller.ts","./src/controllers/roomcontroller.ts","./src/middleware/authmiddleware.ts","./src/routes/authroute.ts","./src/routes/roomroutes.ts","./src/utils/generatefingerprint.ts","./src/utils/generateroomcode.ts"],"version":"5.8.2"}
